@@ -1,18 +1,18 @@
-# -*- encoding:utf-8 -*-
+# -*- coding:utf-8 -*-
 import requests
 import re
-import urllib
 from fake_useragent import UserAgent
 from multiprocessing.dummy import Pool as ThreadPool
-import sys
-
-from movies._compat import PY2, url_encode
-from .searchers.SearchMovieParent import SearchMovieParent
+from movie._compat import PY2, url_encode
+from .search_movie_parent import SearchMovieParent
 
 if PY2:
+    import sys
+
     if sys.getdefaultencoding() != 'utf-8':
         reload(sys)
         sys.setdefaultencoding('utf-8')
+
 
 class MovieHeaven(SearchMovieParent):
     """
@@ -41,7 +41,7 @@ class MovieHeaven(SearchMovieParent):
             if params is not None:
                 params['keyword'] = params['keyword'].encode('gb2312')
                 params = url_encode(params)
-                temp_results = requests.get(url, params=params, headers=self.__get_headers())
+                temp_results = requests.get(url, params=params, headers=super(MovieHeaven, self).get_headers())
             else:
                 temp_results = requests.get(url)
         else:
@@ -54,7 +54,7 @@ class MovieHeaven(SearchMovieParent):
 
     def __get_movies_detail_page(self, searchResults):
         """
-        get the detailPage's url of movies by using regx
+        get the detailPage's url of movie by using regx
         """
         pattern = re.compile(r"<td\s+width='\d+%'><b><a\s+href='(.*\.html)'\s*>")
         all_detai_pages = pattern.findall(searchResults)
@@ -134,7 +134,6 @@ class MovieHeaven(SearchMovieParent):
     def get_display_content(self, url, params=None):
         url_list = self.__get_movie_contents_url(url, params)
         if len(url_list) == 0:
-            # print('Not Found')
             return ['Not Found']
         else:
             all_download_url_list = self.__get_movie_down_url(url_list)
