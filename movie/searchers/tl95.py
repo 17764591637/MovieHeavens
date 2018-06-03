@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from .search_movie_parent import SearchMovieParent
-from .._compat import PY2
+# from .search_movie_parent import SearchMovieParent
+# from .._compat import PY2
 from multiprocessing.dummy import Pool as ThreadPool
 from bs4 import BeautifulSoup
 import requests
 import re
 
-if PY2:
-    import sys
-    if sys.getdefaultencoding() != 'utf-8':
-        reload(sys)
-        sys.setdefaultencoding('utf-8')
+# if PY2:
+#     import sys
+#     if sys.getdefaultencoding() != 'utf-8':
+#         reload(sys)
+#         sys.setdefaultencoding('utf-8')
 
 
-class TL95(SearchMovieParent):
+class TL95(object):
     __slots__ = ['domain', 'pool']
 
     def __init__(self):
@@ -51,7 +51,8 @@ class TL95(SearchMovieParent):
         if any(a_dl):
             down_url_list.append(a_dl[0]['href'])
         if any(a_bd):
-            down_url_list.append(a_bd[0]['href'])
+            p = a_bd[0].find_parent('p')
+            down_url_list.append(p.text)
         if any(a_magnet):
             down_url_list.append(a_magnet[0]['href'])
         if any(a_thunder_list):

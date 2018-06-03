@@ -30,8 +30,6 @@ class MovieHeaven(SearchMovieParent):
         self.__download_domain = 'http://www.ygdy8.com'
         self.__params = {"kwtype": "0", "searchtype": "title", "keyword": "leetao"}
 
-    def __get_headers(self):
-        return {"User-Agent": UserAgent().random}
 
     def __search_movie_results(self, url=None, params=None):
         """
@@ -41,14 +39,14 @@ class MovieHeaven(SearchMovieParent):
             if params is not None:
                 params['keyword'] = params['keyword'].encode('gb2312')
                 params = url_encode(params)
-                temp_results = requests.get(url, params=params, headers=super(MovieHeaven, self).get_headers())
+                temp_results = requests.get(url, params=params, headers=super(MovieHeaven, self).get_headers(), timeout= 5)
             else:
                 temp_results = requests.get(url)
         else:
             if params is not None:
-                temp_results = requests.get(self.__search_url, params=params, headers=self.__get_headers())
+                temp_results = requests.get(self.__search_url, params=params, headers=super(MovieHeaven, self).get_headers(), timeout = 5)
             else:
-                temp_results = requests.get(url, headers=self.__get_headers())
+                temp_results = requests.get(url, headers=super(MovieHeaven, self).get_headers(), timeout = 5)
         temp_results.encoding = 'gb2312'
         return temp_results.text
 
@@ -131,11 +129,11 @@ class MovieHeaven(SearchMovieParent):
             ftp_url = "unknown url"
         return ftp_url
 
-    def get_display_content(self, url, params=None):
+    def get_display_content(self, movie_name):
+        params = {"kwtype": "0", "searchtype": "title", "keyword": movie_name}
+        url = "http://s.dydytt.net/plus/search.php"
         url_list = self.__get_movie_contents_url(url, params)
-        if len(url_list) == 0:
-            return ['Not Found']
-        else:
+        if len(url_list) != 0:
             all_download_url_list = self.__get_movie_down_url(url_list)
             movie_list = [url for url in all_download_url_list[0] if
                           url[-3:] not in ['zip', 'rar', 'exe'] and url != "unknown url"]
