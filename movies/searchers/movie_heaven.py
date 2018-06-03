@@ -6,8 +6,8 @@ from fake_useragent import UserAgent
 from multiprocessing.dummy import Pool as ThreadPool
 import sys
 
-from ._compat import PY2, url_encode
-from .SearchMovieParent import SearchMovieParent
+from movies._compat import PY2, url_encode
+from .searchers.SearchMovieParent import SearchMovieParent
 
 if PY2:
     if sys.getdefaultencoding() != 'utf-8':

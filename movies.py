@@ -2,7 +2,7 @@
 import sys
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
-from movieSource.MovieHeaven import MovieHeaven
+from movies.searchers import MovieHeaven
 import helpUI
 
 QTextCodec.setCodecForTr(QTextCodec.codecForName("utf8"))
