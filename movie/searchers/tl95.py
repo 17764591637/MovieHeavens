@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 
-# from .search_movie_parent import SearchMovieParent
-# from .._compat import PY2
+from .search_movie_parent import SearchMovieParent
+from .._compat import PY2
 from multiprocessing.dummy import Pool as ThreadPool
 from bs4 import BeautifulSoup
 import requests
 import re
 
-# if PY2:
-#     import sys
-#     if sys.getdefaultencoding() != 'utf-8':
-#         reload(sys)
-#         sys.setdefaultencoding('utf-8')
+if PY2:
+    import sys
+    if sys.getdefaultencoding() != 'utf-8':
+        reload(sys)
+        sys.setdefaultencoding('utf-8')
 
 
-class TL95(object):
+class TL95(SearchMovieParent):
     __slots__ = ['domain', 'pool']
 
     def __init__(self):
@@ -23,7 +23,7 @@ class TL95(object):
 
     def __get_search_list(self, movie_name):
         url = "{0}/?s={1}".format(self.domain, movie_name)
-        res = requests.get(url)
+        res = requests.get(url, headers = super(TL95, self).get_headers(), timeout= 10)
         soup = BeautifulSoup(res.content,"html.parser")
         a_list = soup.find_all('a',rel='bookmark')
         a_href_list = [a['href'] for a in a_list]
@@ -33,7 +33,7 @@ class TL95(object):
 
         down_url_list = []
 
-        res = requests.get(url)
+        res = requests.get(url,headers = super(TL95, self).get_headers(), timeout= 10)
         
         soup = BeautifulSoup(res.content, "html.parser")
         # 电驴的链接
@@ -69,8 +69,3 @@ class TL95(object):
                 for down_url in url_list:
                     down_url_list.append(down_url)
         return down_url_list
-
-
-if __name__ == '__main__':
-    a = TL95()
-    print(a.get_display_content('我爱你'))
