@@ -8,4 +8,5 @@ def get_all_down_url_list(movie_name):
         heaven_list = []
     Tl95 = tl95.TL95()
     tl95_list = Tl95.get_display_content(movie_name)
-    return heaven_list.extend(tl95_list)
+    all_list = tl95_list + heaven_list
+    return all_list
