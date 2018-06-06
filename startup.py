@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 from movie import get_all_down_url_list
 from tkinter import *
+import tkinter.messagebox
 from tkinter.ttk import *
 import asyncio
 
 
 
 class Application(Frame):
-    __slots__ = ['movie_entry', 'search_btn', 'entry_style', 'btn_style', 'progress_bar', 'root']
+    __slots__ = ['movie_entry', 'search_btn', 'entry_style', 'btn_style', 'progress_bar', 'root', 'move_list_box']
 
     def __init__(self, master=Tk()):
         self.root = master
@@ -21,7 +22,7 @@ class Application(Frame):
         self.pack()
         self.__create_widgets()
     
-    def __call__(self,width=300,height=200):
+    def __call__(self,width=400,height=200):
         self.master.minsize(width,height)      
         self.mainloop()
 
@@ -35,17 +36,35 @@ class Application(Frame):
     def __search_movie(self):
         movie_name = self.movie_entry.get()
         self.__handle_ui_under_search()
+        self.__start_movie_task(movie_name)
 
-    def __get_movie_list(self,movie_name):
-        self.movie_list_box = Listbox()
+    def __start_movie_task(self,movie_name):
+        coroutine = self.__get_movie_list(movie_name)
+        loop = asyncio.get_event_loop()
+        task = loop.create_task(coroutine)
+        loop.run_until_complete(task)
+
+    async def __get_movie_list(self,movie_name):
+        self.movie_list_box = Listbox(self.root, name='movie_list', width=40)
         for movie in get_all_down_url_list(movie_name):
             self.movie_list_box.insert(END, movie)
+        self.movie_list_box.bind('<<ListboxSelect>>', self.__movie_list_select)
+        self.movie_list_box.pack()
+        self.__handle_ui_after_search()
     
-    def __movie_list_select(self,evt):
-        w = evt.widget
+    def __movie_list_select(self,event):
+        w = event.widget
         index = int(w.curselection()[0])
         value = w.get(index)
-        # TODO 复制到剪贴板
+        self.__copy_to_clipboard(value)
+        
+    def __copy_to_clipboard(self, value):
+        clip = Tk()
+        clip.withdraw()
+        clip.clipboard_clear()
+        clip.clipboard_append(value)
+        tkinter.messagebox.showinfo("提示","成功复制到剪贴板")
+        
 
     def __handle_ui_after_search(self):
         self.search_btn.config(state=ACTIVE)
