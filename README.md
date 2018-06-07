@@ -14,11 +14,21 @@
 python3 startup.py
 ```
 
+### 打包
+
+确保安装 pyinstaller
+
+```python
+pyinstaller -w -F startup.py -p movie\__init__.py -p movie\_compat.py -p movie\searchers\__init__.py -p movie\searchers\movie_heaven.py -p movie\searchers\search_movie_parent.py -p movie\searchers\tl95.py -i movie.ico
+```
+
 ### 可执行程序
 
 [Linux版本](https://pan.baidu.com/s/1Pd3NrJRmsPeZmJrIbCxJAA)
 
 [Windows版本](https://pan.baidu.com/s/1xVwUSlA4mAp-YQjPSUirlw)
+
+[Tk-Windows版本](https://pan.baidu.com/s/1tYK7ca1GWONaLKKSekfYPw)
 
 ### 其他版本
 
